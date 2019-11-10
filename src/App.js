@@ -2,11 +2,23 @@ import React, { useState, useEffect } from 'react';
 
 export default function App() {
     const [repositories, setRepositories] = useState([]);
+    const [location, setLocation] = useState({});
+
+    useEffect(() => {
+     navigator.geolocation.watchPosition(handlePositionReceived)
+    }, []);
+
+    function handlePositionReceived({ coords }){
+        console.log(coords)
+        const { latitude, longitude} = coords
+        setLocation({latitude, longitude})
+    }
+
     useEffect(async () => {
       const response = await fetch('https://api.github.com/users/davisjr2000/repos');
       const data = await response.json();
 
-      setRepositories(data)
+      setRepositories(data);
     }, []);
 
     useEffect(() => {
@@ -31,7 +43,10 @@ export default function App() {
     }
 
     return (
-        <>
+        <> 
+
+            Latitude: {location.latitude} <br/>
+            Longitude: {location.longitude}
             <ul>
                 {repositories.map((repo =>
                     <li key={repo.id}>
